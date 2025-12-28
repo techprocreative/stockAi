@@ -1,9 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { TradingViewChart } from '@/components/stock/tradingview-chart'
 import { FundamentalMetrics } from '@/components/stock/fundamental-metrics'
+import { AddToWatchlistButton } from '@/components/stock/add-to-watchlist-button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Star, TrendingUp, TrendingDown } from 'lucide-react'
+import { TrendingUp, TrendingDown } from 'lucide-react'
 
 interface StockDetailPageProps {
   params: {
@@ -56,10 +56,7 @@ export default async function StockDetailPage({ params }: StockDetailPageProps) 
             </p>
           )}
         </div>
-        <Button variant="outline" size="sm">
-          <Star className="h-4 w-4 mr-2" />
-          Add to Watchlist
-        </Button>
+        <AddToWatchlistButton stockCode={code.toUpperCase()} />
       </div>
 
       {/* Price Card */}
