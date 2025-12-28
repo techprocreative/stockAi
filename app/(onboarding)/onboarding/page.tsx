@@ -62,11 +62,11 @@ export default function OnboardingPage() {
         throw new Error(errorData.error || 'Failed to complete onboarding')
       }
 
-      // Force router refresh and redirect to dashboard
-      router.refresh()
+      // Wait a bit for server to update and revalidate
+      await new Promise(resolve => setTimeout(resolve, 500))
 
-      // Use replace instead of push to prevent back navigation
-      router.replace('/dashboard')
+      // Hard refresh to clear all caches
+      window.location.href = '/dashboard'
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan')
     } finally {

@@ -38,8 +38,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Revalidate paths to clear cache
-    revalidatePath('/dashboard')
-    revalidatePath('/onboarding')
+    revalidatePath('/dashboard', 'layout')
+    revalidatePath('/onboarding', 'layout')
+    revalidatePath('/', 'layout')
 
     return NextResponse.json({ success: true })
   } catch (error) {

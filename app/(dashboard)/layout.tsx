@@ -18,7 +18,7 @@ export default async function DashboardLayout({
     redirect('/auth/sign-in')
   }
 
-  // Check onboarding status
+  // Check onboarding status (with cache bypass)
   const { data: profile } = await supabase
     .from('profiles')
     .select('onboarding_completed')
