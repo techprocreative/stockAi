@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Settings as SettingsIcon, MessageSquare, Flag, Shield } from 'lucide-react'
 import { ChatLimitsConfig } from '@/components/admin/settings/chat-limits-config'
 import { FeatureFlags } from '@/components/admin/settings/feature-flags'
+import { AdminUsers } from '@/components/admin/settings/admin-users'
 
 export default function SettingsPage() {
   return (
@@ -58,11 +59,7 @@ export default function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="border-brutal p-8 bg-muted/30 rounded text-center">
-              <p className="text-sm text-muted-foreground">
-                Admin users management coming soon
-              </p>
-            </div>
+            <AdminUsers />
           </CardContent>
         </Card>
       </div>
