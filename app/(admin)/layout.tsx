@@ -29,13 +29,13 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen flex">
       <AdminSidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col lg:ml-0">
         <AdminHeader
           userEmail={user.email || ''}
           userName={profile.full_name}
           avatarUrl={profile.avatar_url}
         />
-        <main className="flex-1 p-8 bg-background">
+        <main className="flex-1 p-4 lg:p-8 bg-background pt-20 lg:pt-8">
           {children}
         </main>
       </div>

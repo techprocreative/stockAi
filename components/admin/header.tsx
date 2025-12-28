@@ -27,23 +27,28 @@ export function AdminHeader({ userEmail, userName, avatarUrl }: AdminHeaderProps
     : userEmail[0].toUpperCase()
 
   return (
-    <header className="border-b-4 border-border bg-background px-8 py-4">
+    <header className="border-b-4 border-border bg-background px-4 py-3 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">Admin Dashboard</h1>
+        <div className="pl-14 lg:pl-0">
+          <h1 className="text-lg lg:text-xl font-bold">Admin Dashboard</h1>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 lg:gap-4">
+          <div className="hidden md:flex items-center gap-3">
             <Avatar className="border-brutal">
               <AvatarImage src={avatarUrl} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
             <div className="text-sm">
               <p className="font-medium">{userName || 'Admin'}</p>
-              <p className="text-muted-foreground">{userEmail}</p>
+              <p className="text-muted-foreground text-xs">{userEmail}</p>
             </div>
           </div>
+
+          <Avatar className="border-brutal md:hidden">
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
 
           <Button
             variant="outline"
@@ -51,8 +56,8 @@ export function AdminHeader({ userEmail, userName, avatarUrl }: AdminHeaderProps
             onClick={handleSignOut}
             className="border-brutal shadow-brutal-sm hover-lift"
           >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
+            <LogOut className="h-4 w-4 lg:mr-2" />
+            <span className="hidden lg:inline">Logout</span>
           </Button>
         </div>
       </div>
