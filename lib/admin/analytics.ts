@@ -78,3 +78,87 @@ export async function getDashboardStats() {
     avgResponseTime,
   }
 }
+
+export async function getUserGrowthData(days: number = 30) {
+  const supabase = await createClient()
+
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - days)
+  startDate.setHours(0, 0, 0, 0)
+
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('created_at')
+    .gte('created_at', startDate.toISOString())
+    .order('created_at', { ascending: true })
+
+  // Group by day
+  const dailyData: Record<string, number> = {}
+
+  profiles?.forEach((profile) => {
+    const date = new Date(profile.created_at).toLocaleDateString()
+    dailyData[date] = (dailyData[date] || 0) + 1
+  })
+
+  // Convert to cumulative data
+  let cumulative = 0
+  const chartData = Object.entries(dailyData).map(([date, count]) => {
+    cumulative += count
+    return {
+      date,
+      users: cumulative,
+    }
+  })
+
+  return chartData
+}
+
+export async function getChatVolumeData(days: number = 30) {
+  const supabase = await createClient()
+
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - days)
+  startDate.setHours(0, 0, 0, 0)
+
+  const { data: messages } = await supabase
+    .from('chat_messages')
+    .select('created_at')
+    .gte('created_at', startDate.toISOString())
+
+  // Group by day
+  const dailyData: Record<string, number> = {}
+
+  messages?.forEach((message) => {
+    const date = new Date(message.created_at).toLocaleDateString()
+    dailyData[date] = (dailyData[date] || 0) + 1
+  })
+
+  const chartData = Object.entries(dailyData).map(([date, count]) => ({
+    date,
+    messages: count,
+  }))
+
+  return chartData
+}
+
+export async function getTierDistribution() {
+  const supabase = await createClient()
+
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('subscription_tier')
+
+  const distribution: Record<string, number> = {}
+
+  profiles?.forEach((profile) => {
+    const tier = profile.subscription_tier || 'free'
+    distribution[tier] = (distribution[tier] || 0) + 1
+  })
+
+  const chartData = Object.entries(distribution).map(([name, value]) => ({
+    name: name.charAt(0).toUpperCase() + name.slice(1),
+    value,
+  }))
+
+  return chartData
+}
