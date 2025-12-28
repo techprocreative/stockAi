@@ -14,6 +14,7 @@ import {
   Activity,
 } from 'lucide-react'
 import { EditTierDialog } from '@/components/admin/users/edit-tier-dialog'
+import { DeleteUserDialog } from '@/components/admin/users/delete-user-dialog'
 
 interface PageProps {
   params: {
@@ -211,12 +212,10 @@ export default async function UserDetailPage({ params }: PageProps) {
               >
                 Send Password Reset Email
               </Button>
-              <Button
-                variant="destructive"
-                className="w-full border-brutal"
-              >
-                Delete User Account
-              </Button>
+              <DeleteUserDialog
+                userId={user.id}
+                userName={user.full_name || user.username || 'User'}
+              />
             </CardContent>
           </Card>
         </div>
