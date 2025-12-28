@@ -1,97 +1,168 @@
-interface StockPrice {
+import { SupabaseClient } from '@supabase/supabase-js'
+import yahooFinance from 'yahoo-finance2'
+
+export interface StockData {
   stock_code: string
+  stock_name: string
   price: number
-  change: number
   change_percent: number
   volume: number
   market_cap?: number
-  timestamp: Date
-}
-
-interface StockFundamentals {
-  stock_code: string
-  stock_name: string
-  sector?: string
   per?: number
   pbv?: number
   roe?: number
   der?: number
   dividend_yield?: number
+  sector?: string
+  subsector?: string
+  updated_at?: string
 }
 
 export class StockDataFetcher {
-  // Note: This is a placeholder implementation
-  // In production, you would use actual Yahoo Finance API or web scraping
-
-  static async fetchStockPrice(stockCode: string): Promise<StockPrice | null> {
-    try {
-      // Placeholder: In production, fetch from Yahoo Finance
-      // For now, return mock data for demonstration
-      console.log(`Fetching price for ${stockCode}...`)
-
-      // This would be replaced with actual API call:
-      // const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${stockCode}.JK`)
-
-      return null // Return null until actual implementation
-    } catch (error) {
-      console.error('Error fetching stock price:', error)
-      return null
-    }
-  }
-
-  static async fetchFundamentals(stockCode: string): Promise<StockFundamentals | null> {
-    try {
-      // Placeholder: In production, fetch from Yahoo Finance or other sources
-      console.log(`Fetching fundamentals for ${stockCode}...`)
-
-      return null // Return null until actual implementation
-    } catch (error) {
-      console.error('Error fetching fundamentals:', error)
-      return null
-    }
-  }
-
-  // Helper to check cache and fetch if needed
-  static async getStockData(stockCode: string, supabase: any) {
-    // Check cache first
-    const { data: cached } = await supabase
+  /**
+   * Fetch stock data from database cache
+   */
+  static async getStockData(
+    stockCode: string,
+    supabase: SupabaseClient
+  ): Promise<StockData | null> {
+    const { data, error } = await supabase
       .from('stock_fundamentals')
       .select('*')
-      .eq('stock_code', stockCode)
+      .eq('stock_code', stockCode.toUpperCase())
       .single()
 
-    // If cache is fresh (< 5 minutes), return it
-    if (cached) {
-      const cacheAge = Date.now() - new Date(cached.last_updated).getTime()
-      if (cacheAge < 5 * 60 * 1000) {
-        return cached
+    if (error || !data) {
+      return null
+    }
+
+    return data as StockData
+  }
+
+  /**
+   * Fetch real-time stock data from Yahoo Finance
+   */
+  static async fetchFromYahooFinance(stockCode: string): Promise<Partial<StockData> | null> {
+    try {
+      // Add .JK suffix for Indonesian stocks
+      const symbol = stockCode.includes('.') ? stockCode : `${stockCode}.JK`
+
+      // Fetch quote data
+      const quote = await yahooFinance.quote(symbol) as any
+
+      if (!quote) {
+        return null
+      }
+
+      // Calculate change percent
+      const price = quote.regularMarketPrice || 0
+      const previousClose = quote.regularMarketPreviousClose || price
+      const changePercent = previousClose !== 0
+        ? ((price - previousClose) / previousClose) * 100
+        : 0
+
+      return {
+        stock_code: stockCode.toUpperCase(),
+        stock_name: quote.longName || quote.shortName || stockCode,
+        price: price,
+        change_percent: changePercent,
+        volume: quote.regularMarketVolume || 0,
+        market_cap: quote.marketCap,
+        per: quote.trailingPE,
+        pbv: quote.priceToBook,
+        dividend_yield: quote.dividendYield ? quote.dividendYield * 100 : undefined,
+      }
+    } catch (error) {
+      console.error(`Failed to fetch Yahoo Finance data for ${stockCode}:`, error)
+      return null
+    }
+  }
+
+  /**
+   * Fetch and cache stock data
+   */
+  static async fetchAndCache(
+    stockCode: string,
+    supabase: SupabaseClient
+  ): Promise<StockData | null> {
+    // First, try to get from cache
+    const cachedData = await this.getStockData(stockCode, supabase)
+
+    // Check if cache is fresh (less than 1 hour old)
+    if (cachedData) {
+      const updatedAt = new Date(cachedData.updated_at || 0).getTime()
+      const now = Date.now()
+      const oneHour = 60 * 60 * 1000
+
+      if (now - updatedAt < oneHour) {
+        return cachedData
       }
     }
 
-    // Otherwise fetch fresh data
-    const price = await this.fetchStockPrice(stockCode)
-    const fundamentals = await this.fetchFundamentals(stockCode)
+    // Fetch fresh data from Yahoo Finance
+    const freshData = await this.fetchFromYahooFinance(stockCode)
 
-    if (price || fundamentals) {
-      // Update cache
-      const stockData = {
-        stock_code: stockCode,
-        price: price?.price,
-        change_percent: price?.change_percent,
-        volume: price?.volume,
-        ...fundamentals,
-        last_updated: new Date().toISOString(),
-      }
-
-      await supabase
-        .from('stock_fundamentals')
-        .upsert(stockData)
-
-      return stockData
+    if (!freshData) {
+      return cachedData // Return cached data if fetch failed
     }
 
-    return cached // Return stale cache if fetch failed
+    // Update or insert in database
+    const { error } = await supabase
+      .from('stock_fundamentals')
+      .upsert(
+        {
+          ...freshData,
+          updated_at: new Date().toISOString(),
+        },
+        {
+          onConflict: 'stock_code',
+        }
+      )
+
+    if (error) {
+      console.error('Failed to cache stock data:', error)
+    }
+
+    return { ...cachedData, ...freshData } as StockData
+  }
+
+  /**
+   * Search stocks by keyword
+   */
+  static async searchStocks(
+    keyword: string,
+    supabase: SupabaseClient
+  ): Promise<StockData[]> {
+    const { data, error } = await supabase
+      .from('stock_fundamentals')
+      .select('*')
+      .or(`stock_code.ilike.%${keyword}%,stock_name.ilike.%${keyword}%`)
+      .limit(20)
+
+    if (error || !data) {
+      return []
+    }
+
+    return data as StockData[]
+  }
+
+  /**
+   * Get stocks by sector
+   */
+  static async getStocksBySector(
+    sector: string,
+    supabase: SupabaseClient
+  ): Promise<StockData[]> {
+    const { data, error } = await supabase
+      .from('stock_fundamentals')
+      .select('*')
+      .eq('sector', sector)
+      .order('market_cap', { ascending: false })
+
+    if (error || !data) {
+      return []
+    }
+
+    return data as StockData[]
   }
 }
-
-export { type StockPrice, type StockFundamentals }
