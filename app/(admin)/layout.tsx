@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { AdminSidebar } from '@/components/admin/sidebar'
+import { AdminHeader } from '@/components/admin/header'
 
 export default async function AdminLayout({
   children,
@@ -8,17 +10,15 @@ export default async function AdminLayout({
 }) {
   const supabase = await createClient()
 
-  // Check authentication
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
   if (authError || !user) {
     redirect('/auth/sign-in?redirect=/admin')
   }
 
-  // Check admin authorization
   const { data: profile } = await supabase
     .from('profiles')
-    .select('subscription_tier')
+    .select('subscription_tier, full_name, avatar_url')
     .eq('id', user.id)
     .single()
 
@@ -26,5 +26,19 @@ export default async function AdminLayout({
     redirect('/dashboard?error=unauthorized')
   }
 
-  return <div>{children}</div>
+  return (
+    <div className="min-h-screen flex">
+      <AdminSidebar />
+      <div className="flex-1 flex flex-col">
+        <AdminHeader
+          userEmail={user.email || ''}
+          userName={profile.full_name}
+          avatarUrl={profile.avatar_url}
+        />
+        <main className="flex-1 p-8 bg-background">
+          {children}
+        </main>
+      </div>
+    </div>
+  )
 }
