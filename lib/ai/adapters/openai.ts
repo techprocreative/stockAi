@@ -1,4 +1,4 @@
-import { Message, ChatOptions, AIResponse, AIProvider, AIAdapter } from './types'
+import { Message, ChatOptions, AIResponse, AIProvider, AIAdapter } from '../types'
 
 export class OpenAIAdapter implements AIAdapter {
   constructor(private provider: AIProvider) {}

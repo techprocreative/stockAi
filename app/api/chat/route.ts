@@ -84,14 +84,22 @@ export async function POST(request: NextRequest) {
         },
       ])
 
-      // Update session message count
-      await supabase
+      // Get current message count and increment
+      const { data: session } = await supabase
         .from('chat_sessions')
-        .update({
-          message_count: supabase.raw('message_count + 2'),
-          updated_at: new Date().toISOString(),
-        })
+        .select('message_count')
         .eq('id', sessionId)
+        .single()
+
+      if (session) {
+        await supabase
+          .from('chat_sessions')
+          .update({
+            message_count: session.message_count + 2,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', sessionId)
+      }
     }
 
     // Increment daily chat count
