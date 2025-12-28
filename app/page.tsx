@@ -1,10 +1,13 @@
+import { HeroSection } from '@/components/landing/hero-section'
+import { FeaturesSection } from '@/components/landing/features-section'
+import { CTASection } from '@/components/landing/cta-section'
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold">IndoStock AI</h1>
-      <p className="mt-4 text-lg text-gray-600">
-        AI-powered stock analysis for Indonesian traders
-      </p>
+    <main className="min-h-screen">
+      <HeroSection />
+      <FeaturesSection />
+      <CTASection />
     </main>
-  );
+  )
 }
