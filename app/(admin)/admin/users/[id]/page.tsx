@@ -13,6 +13,7 @@ import {
   Calendar,
   Activity,
 } from 'lucide-react'
+import { EditTierDialog } from '@/components/admin/users/edit-tier-dialog'
 
 interface PageProps {
   params: {
@@ -74,13 +75,14 @@ export default async function UserDetailPage({ params }: PageProps) {
 
               <div>
                 <Label className="text-xs text-muted-foreground">Subscription Tier</Label>
-                <div className="mt-1">
+                <div className="mt-1 flex items-center justify-between">
                   <Badge
                     variant="outline"
                     className={`border-brutal ${tierColors[user.subscription_tier as keyof typeof tierColors]}`}
                   >
                     {user.subscription_tier}
                   </Badge>
+                  <EditTierDialog userId={user.id} currentTier={user.subscription_tier} />
                 </div>
               </div>
 
