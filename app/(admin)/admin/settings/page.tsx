@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Settings as SettingsIcon, MessageSquare, Flag, Shield } from 'lucide-react'
 import { ChatLimitsConfig } from '@/components/admin/settings/chat-limits-config'
+import { FeatureFlags } from '@/components/admin/settings/feature-flags'
 
 export default function SettingsPage() {
   return (
@@ -41,11 +42,7 @@ export default function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="border-brutal p-8 bg-muted/30 rounded text-center">
-              <p className="text-sm text-muted-foreground">
-                Feature flags configuration coming soon
-              </p>
-            </div>
+            <FeatureFlags />
           </CardContent>
         </Card>
 
