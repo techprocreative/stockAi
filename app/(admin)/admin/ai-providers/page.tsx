@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Brain, Check, X } from 'lucide-react'
+import { ProviderFormDialog } from '@/components/admin/providers/provider-form-dialog'
 
 export default async function AIProvidersPage() {
   const providers = await getProviders()
@@ -16,10 +17,7 @@ export default async function AIProvidersPage() {
             Manage AI provider configurations and settings
           </p>
         </div>
-        <Button className="border-brutal shadow-brutal-sm hover-lift">
-          <Brain className="h-4 w-4 mr-2" />
-          Add Provider
-        </Button>
+        <ProviderFormDialog />
       </div>
 
       {/* Providers Grid */}
@@ -81,13 +79,7 @@ export default async function AIProvidersPage() {
               </div>
 
               <div className="flex gap-2 pt-2 border-t-2 border-border">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 border-brutal"
-                >
-                  Edit
-                </Button>
+                <ProviderFormDialog provider={provider} />
                 <Button
                   variant="outline"
                   size="sm"
@@ -109,10 +101,16 @@ export default async function AIProvidersPage() {
             <p className="text-sm text-muted-foreground mt-2">
               Add your first AI provider to get started
             </p>
-            <Button className="mt-4 border-brutal shadow-brutal-sm">
-              <Brain className="h-4 w-4 mr-2" />
-              Add Provider
-            </Button>
+            <div className="mt-4">
+              <ProviderFormDialog
+                trigger={
+                  <Button className="border-brutal shadow-brutal-sm">
+                    <Brain className="h-4 w-4 mr-2" />
+                    Add Provider
+                  </Button>
+                }
+              />
+            </div>
           </CardContent>
         </Card>
       )}
