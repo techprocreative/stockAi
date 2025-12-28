@@ -1477,16 +1477,314 @@ git commit -m "feat: create user detail page with stats and activity"
 
 ---
 
-**Note:** Implementation plan ini sudah mencakup:
-- ✅ Foundation & Auth (Tasks 1-3)
-- ✅ Dashboard Page (Tasks 4-5)
-- ✅ User Management List (Tasks 6-7)
-- ✅ User Detail Page (Task 8)
+---
 
-Saya akan melanjutkan dengan Phase 5-8 untuk melengkapi implementasi:
-- Phase 5: User Tier Editing & Deletion
-- Phase 6: AI Providers Management
-- Phase 7: Analytics Dashboard
-- Phase 8: Content Management & Settings
+## Phase 5: User Tier Editing & Deletion
 
-Apakah saya lanjutkan menulis semua tasks hingga selesai? Atau kamu ingin review dulu tasks 1-8 yang sudah saya tulis?
+### Task 9: Create API Route for Tier Update
+
+**Files:**
+- Create: `app/api/admin/users/[id]/tier/route.ts`
+
+**Implementation:** Create PATCH endpoint to update user subscription_tier with admin verification.
+
+### Task 10: Add Tier Edit to User Detail Page
+
+**Files:**
+- Modify: `app/(admin)/admin/users/[id]/page.tsx`
+- Create: `components/admin/users/edit-tier-dialog.tsx`
+
+**Implementation:** Add editable tier dropdown with save functionality using optimistic updates.
+
+### Task 11: Implement User Deletion
+
+**Files:**
+- Create: `app/api/admin/users/[id]/route.ts`
+- Create: `components/admin/users/delete-user-dialog.tsx`
+
+**Implementation:** Add DELETE endpoint with cascade deletion and confirmation dialog.
+
+---
+
+## Phase 6: AI Providers Management
+
+### Task 12: Create AI Providers List Page
+
+**Files:**
+- Create: `app/(admin)/admin/ai-providers/page.tsx`
+- Create: `lib/admin/providers.ts`
+
+**Implementation:** Build provider cards grid showing status, priority, and configuration.
+
+### Task 13: Build Provider CRUD API Routes
+
+**Files:**
+- Create: `app/api/admin/ai-providers/route.ts`
+- Create: `app/api/admin/ai-providers/[id]/route.ts`
+
+**Implementation:** Full CRUD endpoints for managing AI providers.
+
+### Task 14: Create Add/Edit Provider Dialog
+
+**Files:**
+- Create: `components/admin/providers/provider-form-dialog.tsx`
+
+**Implementation:** Form with basic + advanced settings, API key encryption.
+
+### Task 15: Implement Provider Test Functionality
+
+**Files:**
+- Create: `app/api/admin/ai-providers/test/route.ts`
+
+**Implementation:** Test endpoint that sends probe request and measures response time.
+
+---
+
+## Phase 7: Analytics Dashboard
+
+### Task 16: Create Analytics Page with Charts
+
+**Files:**
+- Create: `app/(admin)/admin/analytics/page.tsx`
+- Create: `lib/admin/analytics.ts` (expand with chart data functions)
+
+**Implementation:** Time range selector + 3 charts (user growth, chat volume, tier distribution).
+
+### Task 17: Build User Growth Chart
+
+**Files:**
+- Create: `components/admin/analytics/user-growth-chart.tsx`
+
+**Implementation:** LineChart using Recharts showing cumulative user count over time.
+
+### Task 18: Build Chat Volume Chart
+
+**Files:**
+- Create: `components/admin/analytics/chat-volume-chart.tsx`
+
+**Implementation:** BarChart showing daily chat message counts.
+
+### Task 19: Build Tier Distribution Chart
+
+**Files:**
+- Create: `components/admin/analytics/tier-distribution-chart.tsx`
+
+**Implementation:** PieChart showing user distribution by subscription tier.
+
+### Task 20: Add Provider Performance Table
+
+**Files:**
+- Modify: `app/(admin)/admin/analytics/page.tsx`
+
+**Implementation:** Table showing AI provider stats (requests, success rate, avg response time).
+
+---
+
+## Phase 8: Content Management
+
+### Task 21: Create Content Management Page with Tabs
+
+**Files:**
+- Create: `app/(admin)/admin/content/page.tsx`
+
+**Implementation:** Tab navigation for Glossary, Morning Briefings, News Sources.
+
+### Task 22: Build Glossary Terms Management
+
+**Files:**
+- Create: `components/admin/content/glossary-table.tsx`
+- Create: `components/admin/content/glossary-form-dialog.tsx`
+- Create: `app/api/admin/glossary/route.ts`
+
+**Implementation:** Full CRUD for glossary terms with search, category filter, and markdown support.
+
+### Task 23: Create Morning Briefings List
+
+**Files:**
+- Create: `components/admin/content/briefings-list.tsx`
+
+**Implementation:** Card list showing last 30 days of briefings with preview.
+
+### Task 24: Build Briefing View/Edit Dialog
+
+**Files:**
+- Create: `components/admin/content/briefing-dialog.tsx`
+
+**Implementation:** Multi-tab dialog for viewing/editing sentiment, market data, and news.
+
+### Task 25: Add Regenerate Briefing Functionality
+
+**Files:**
+- Create: `app/api/admin/briefings/regenerate/route.ts`
+
+**Implementation:** API to regenerate briefing for specific date using MorningBriefingService.
+
+---
+
+## Phase 9: System Settings
+
+### Task 26: Create Settings Page Layout
+
+**Files:**
+- Create: `app/(admin)/admin/settings/page.tsx`
+
+**Implementation:** Multi-section settings page with cards for each config area.
+
+### Task 27: Build Chat Limits Configuration
+
+**Files:**
+- Create: `components/admin/settings/chat-limits-config.tsx`
+- Create: `app/api/admin/settings/route.ts`
+
+**Implementation:** Editable inputs for daily chat limits per tier with save/load from DB.
+
+### Task 28: Implement Feature Flags
+
+**Files:**
+- Create: `components/admin/settings/feature-flags.tsx`
+
+**Implementation:** Toggle switches for enabling/disabling features globally.
+
+### Task 29: Add Maintenance Mode Controls
+
+**Files:**
+- Create: `components/admin/settings/maintenance-mode.tsx`
+- Modify: `middleware.ts`
+
+**Implementation:** Toggle maintenance mode with custom message, block non-admin access.
+
+### Task 30: Create Admin Users Management
+
+**Files:**
+- Create: `components/admin/settings/admin-users.tsx`
+- Create: `app/api/admin/promote/route.ts`
+
+**Implementation:** List of admins, promote/revoke functionality with confirmation.
+
+---
+
+## Phase 10: Final Polish & Testing
+
+### Task 31: Add Responsive Mobile Styles
+
+**Files:**
+- Modify: `components/admin/sidebar.tsx`
+- Create: `components/admin/mobile-nav.tsx`
+
+**Implementation:** Collapsible sidebar on mobile, hamburger menu, responsive tables.
+
+### Task 32: Performance Optimization
+
+**Files:**
+- Create: `lib/admin/cache.ts`
+- Modify analytics and stats functions
+
+**Implementation:** Add caching layer (5min TTL) for analytics queries, optimize heavy queries.
+
+### Task 33: End-to-End Testing & Documentation
+
+**Files:**
+- Create: `docs/admin-panel-guide.md`
+
+**Implementation:** Manual testing checklist, user guide for admin panel features.
+
+---
+
+## Summary Checklist
+
+**Foundation (Tasks 1-3):**
+- [ ] Admin route group with auth
+- [ ] RLS policies
+- [ ] Sidebar & header components
+
+**Dashboard (Tasks 4-5):**
+- [ ] Stats card component
+- [ ] Dashboard with 8 metrics
+
+**User Management (Tasks 6-11):**
+- [ ] Users list with filters
+- [ ] User detail page
+- [ ] Tier editing
+- [ ] User deletion
+
+**AI Providers (Tasks 12-15):**
+- [ ] Providers list
+- [ ] CRUD operations
+- [ ] Add/edit dialog
+- [ ] Test functionality
+
+**Analytics (Tasks 16-20):**
+- [ ] Analytics page
+- [ ] User growth chart
+- [ ] Chat volume chart
+- [ ] Tier distribution chart
+- [ ] Provider performance table
+
+**Content Management (Tasks 21-25):**
+- [ ] Content tabs
+- [ ] Glossary CRUD
+- [ ] Briefings list
+- [ ] Briefing editor
+- [ ] Regenerate briefing
+
+**System Settings (Tasks 26-30):**
+- [ ] Settings page
+- [ ] Chat limits config
+- [ ] Feature flags
+- [ ] Maintenance mode
+- [ ] Admin users management
+
+**Polish (Tasks 31-33):**
+- [ ] Mobile responsive
+- [ ] Performance optimization
+- [ ] Testing & docs
+
+---
+
+## Implementation Notes
+
+**Total Tasks:** 33
+**Estimated Time:** 7-10 days
+**Approach:** TDD with frequent commits
+**Tech Stack:** Next.js 16, React 19, TypeScript, Supabase, Recharts, shadcn/ui
+
+**Key Principles:**
+- DRY: Reuse components (StatsCard, FormDialog, etc.)
+- YAGNI: Build only what's in the spec, no extras
+- TDD: Write tests first where applicable
+- Frequent commits: After each task completion
+
+**Dependencies to Install:**
+```bash
+npm install recharts date-fns
+```
+
+**Migrations to Apply:**
+```bash
+# In Supabase SQL Editor:
+- 20251229000004_admin_rls_policies.sql
+```
+
+**Environment Setup:**
+Ensure at least one user has `subscription_tier = 'admin'` in profiles table for testing.
+
+---
+
+## Next Steps for Parallel Execution
+
+1. **Keep this terminal/session open** (for reference if needed)
+2. **Open NEW terminal/session** in same directory
+3. **In new session, run:**
+   ```bash
+   # Load this implementation plan
+   # Use: /superpowers:executing-plans
+   ```
+4. **The executing-plans skill will:**
+   - Execute tasks 1-33 sequentially
+   - Run tests after each task
+   - Commit after verification
+   - Provide checkpoints for review
+
+**Plan saved to:** `docs/plans/2025-12-29-admin-panel-implementation.md`
+
+Ready for execution in new session!
