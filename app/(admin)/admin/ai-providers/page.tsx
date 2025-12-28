@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Brain, Check, X } from 'lucide-react'
 import { ProviderFormDialog } from '@/components/admin/providers/provider-form-dialog'
+import { TestProviderDialog } from '@/components/admin/providers/test-provider-dialog'
 
 export default async function AIProvidersPage() {
   const providers = await getProviders()
@@ -80,13 +81,10 @@ export default async function AIProvidersPage() {
 
               <div className="flex gap-2 pt-2 border-t-2 border-border">
                 <ProviderFormDialog provider={provider} />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 border-brutal"
-                >
-                  Test
-                </Button>
+                <TestProviderDialog
+                  providerId={provider.id}
+                  providerName={provider.name}
+                />
               </div>
             </CardContent>
           </Card>
