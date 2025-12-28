@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { MorningBriefingCard } from '@/components/dashboard/morning-briefing-card'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -25,19 +26,10 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Morning Briefing</CardTitle>
-            <CardDescription>Ringkasan pasar hari ini</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Fitur akan segera hadir
-            </p>
-          </CardContent>
-        </Card>
+      {/* Morning Briefing */}
+      <MorningBriefingCard />
 
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>Watchlist</CardTitle>
@@ -58,6 +50,21 @@ export default async function DashboardPage() {
           <CardContent>
             <p className="text-2xl font-bold">
               {profile?.chat_limit - profile?.daily_chat_count}/{profile?.chat_limit}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Level Trading</CardTitle>
+            <CardDescription>Pengalaman Anda</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg font-semibold capitalize">
+              {profile?.user_level || 'N/A'}
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {profile?.trading_style || 'N/A'}
             </p>
           </CardContent>
         </Card>
