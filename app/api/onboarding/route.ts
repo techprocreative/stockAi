@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,6 +36,10 @@ export async function POST(request: NextRequest) {
     if (updateError) {
       throw updateError
     }
+
+    // Revalidate paths to clear cache
+    revalidatePath('/dashboard')
+    revalidatePath('/onboarding')
 
     return NextResponse.json({ success: true })
   } catch (error) {
