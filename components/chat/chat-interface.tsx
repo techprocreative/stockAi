@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { GlossaryHighlightedText } from '@/components/glossary/glossary-highlighted-text'
 import { Send } from 'lucide-react'
 
 interface Message {
@@ -90,7 +91,13 @@ export function ChatInterface() {
                     : 'bg-muted'
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                {message.role === 'assistant' ? (
+                  <p className="text-sm whitespace-pre-wrap">
+                    <GlossaryHighlightedText text={message.content} />
+                  </p>
+                ) : (
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                )}
               </div>
             </div>
           ))
