@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FileText, BookOpen, Newspaper } from 'lucide-react'
+import { GlossaryTable } from '@/components/admin/content/glossary-table'
 
 export default function ContentPage() {
   return (
@@ -28,13 +29,7 @@ export default function ContentPage() {
         </TabsList>
 
         <TabsContent value="glossary" className="space-y-4">
-          <div className="border-brutal shadow-brutal bg-card p-8 rounded-lg text-center">
-            <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-lg font-medium">Glossary Management</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Coming soon: Manage financial terms and definitions
-            </p>
-          </div>
+          <GlossaryTable />
         </TabsContent>
 
         <TabsContent value="briefings" className="space-y-4">
