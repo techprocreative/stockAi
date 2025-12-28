@@ -57,3 +57,36 @@ export async function getUsers({
     totalPages,
   }
 }
+
+export async function getUserById(userId: string) {
+  const supabase = await createClient()
+
+  const { data: user, error } = await supabase
+    .from('profiles')
+    .select(`
+      *,
+      chat_sessions(count),
+      watchlists(count),
+      alerts(count)
+    `)
+    .eq('id', userId)
+    .single()
+
+  if (error) {
+    console.error('Error fetching user:', error)
+    return null
+  }
+
+  // Get recent chat sessions
+  const { data: sessions } = await supabase
+    .from('chat_sessions')
+    .select('id, title, message_count, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(5)
+
+  return {
+    ...user,
+    recentSessions: sessions || [],
+  }
+}
