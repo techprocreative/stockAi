@@ -1,8 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Settings as SettingsIcon, MessageSquare, Flag, Shield } from 'lucide-react'
+import { Settings as SettingsIcon, MessageSquare, Flag, Shield, Wrench } from 'lucide-react'
 import { ChatLimitsConfig } from '@/components/admin/settings/chat-limits-config'
 import { FeatureFlags } from '@/components/admin/settings/feature-flags'
 import { AdminUsers } from '@/components/admin/settings/admin-users'
+import { MaintenanceMode } from '@/components/admin/settings/maintenance-mode'
 
 export default function SettingsPage() {
   return (
@@ -60,6 +61,22 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <AdminUsers />
+          </CardContent>
+        </Card>
+
+        {/* Maintenance Mode */}
+        <Card className="border-brutal shadow-brutal">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Wrench className="h-5 w-5" />
+              Maintenance Mode
+            </CardTitle>
+            <CardDescription>
+              Control site accessibility during maintenance
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MaintenanceMode />
           </CardContent>
         </Card>
       </div>

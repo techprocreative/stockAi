@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { setMaintenanceMode } from '@/lib/supabase/middleware'
 
 // Simple in-memory store for settings (in production, use database)
 const settings = {
@@ -8,6 +9,10 @@ const settings = {
     pro: 50,
     whale: 200,
     admin: 999999,
+  },
+  maintenanceMode: {
+    enabled: false,
+    message: 'We are currently performing scheduled maintenance. We will be back shortly!',
   },
 }
 
@@ -68,6 +73,13 @@ export async function POST(request: NextRequest) {
     // Update settings
     if (body.chatLimits) {
       settings.chatLimits = body.chatLimits
+    }
+
+    // Update maintenance mode if provided
+    if (body.maintenanceMode !== undefined) {
+      settings.maintenanceMode = { ...settings.maintenanceMode, ...body.maintenanceMode }
+      // Update middleware state
+      setMaintenanceMode(settings.maintenanceMode)
     }
 
     return NextResponse.json({ success: true, settings })
