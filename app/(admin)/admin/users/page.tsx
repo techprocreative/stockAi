@@ -1,12 +1,4 @@
 import { getUsers } from '@/lib/admin/users'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -20,6 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
+import { UsersFilters } from '@/components/admin/users/users-filters'
+import { UsersPagination } from '@/components/admin/users/users-pagination'
 
 interface PageProps {
   searchParams: {
@@ -60,36 +54,7 @@ export default async function UsersPage({ searchParams }: PageProps) {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4">
-        <Input
-          placeholder="Search by name or username..."
-          defaultValue={search}
-          className="flex-1 border-brutal"
-        />
-        <Select defaultValue={tier}>
-          <SelectTrigger className="w-48 border-brutal">
-            <SelectValue placeholder="All Tiers" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All Tiers</SelectItem>
-            <SelectItem value="free">Free</SelectItem>
-            <SelectItem value="pro">Pro</SelectItem>
-            <SelectItem value="whale">Whale</SelectItem>
-            <SelectItem value="admin">Admin</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select defaultValue={level}>
-          <SelectTrigger className="w-48 border-brutal">
-            <SelectValue placeholder="All Levels" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All Levels</SelectItem>
-            <SelectItem value="newbie">Newbie</SelectItem>
-            <SelectItem value="intermediate">Intermediate</SelectItem>
-            <SelectItem value="advanced">Advanced</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <UsersFilters />
 
       {/* Users Table */}
       <div className="border-brutal shadow-brutal bg-card rounded-lg overflow-hidden">
@@ -159,24 +124,11 @@ export default async function UsersPage({ searchParams }: PageProps) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center gap-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          className="border-brutal"
-        >
-          ← Previous
-        </Button>
-        <span className="text-sm text-muted-foreground">
-          Page {page} of {totalPages} • {count} total users
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          className="border-brutal"
-        >
-          Next →
-        </Button>
+      <UsersPagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalCount={count}
+      />
       </div>
     </div>
   )
